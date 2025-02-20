@@ -4,6 +4,7 @@ import {
     StyleSheet,
     Dimensions
 } from 'react-native';
+
 import React, { useEffect, useState } from 'react';
 import { getLocalStorage } from '../service/Storage';
 import Ionicons from '@expo/vector-icons/Ionicons';

@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
         shadowColor: 'black',
         shadowOffset: { width: 0, height: 6 },
         shadowOpacity: 0.3,
-        
         shadowRadius: 8,
         elevation: 10, // ✅ Required for Android
     },
