@@ -1,0 +1,97 @@
+import { View, Text, StyleSheet, ImageBackground, Dimensions, TextInput, TouchableOpacity } from 'react-native';
+import React from 'react';
+
+export default function LoginScreen() {
+  return (
+    <ImageBackground 
+      source={require('./../../assets/images/Backgrounds/Orange.png')}
+      style={styles.background}
+    >
+      <View style={styles.overlay}>
+        {/* Login Slogan */}
+        <View style={styles.pagetitle}>
+            <Text style={styles.pagetitletext}>MediKar</Text>
+            <Text style={styles.pagepara}>Start from here... Track from here...</Text>
+        </View>
+        {/* Login Box */}
+        <View style={styles.loginContainer}>
+          <Text style={styles.title}>Login</Text>
+          <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#fff" />
+          <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#fff" secureTextEntry />
+
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ImageBackground>
+  );
+}
+
+// Get screen dimensions
+const { width, height } = Dimensions.get('window');
+
+const styles = StyleSheet.create({
+  background: {
+    width: width,
+    height: height,
+    resizeMode: 'cover', // Ensures the image covers the screen
+    flex: 1, // Makes sure the image takes up the full screen
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)', // Adds a semi-transparent overlay for better visibility
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loginContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)', // Slightly transparent background
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 20,
+  },
+  input: {
+    width: '100%',
+    height: 40,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    color: '#fff',
+    marginBottom: 10,
+  },
+  button: {
+    backgroundColor: '#ff9800',
+    padding: 10,
+    borderRadius: 5,
+    width: '100%',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  pagetitletext: {
+    fontSize: 52,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 2,
+  },
+  pagepara: {
+    fontSize: 20,
+    fontWeight: 'semibold',
+    color: '#fff',
+    marginBottom: 40,
+  },
+  pagetitle: {
+    justifyContent: 'right',
+  }
+});
+
