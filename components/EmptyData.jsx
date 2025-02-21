@@ -5,8 +5,12 @@ import {
     Dimensions,
     TouchableOpacity
 } from 'react-native';import React from 'react'
+import { useRouter } from 'expo-router';
 
 export default function EmptyData() {
+
+    const router = useRouter();
+
   return (
     <View style = {styles.container}>
         <Text style={{fontSize: 124}}>🤔</Text>
@@ -14,10 +18,10 @@ export default function EmptyData() {
         <Text style = {styles.noData_Sub}>You have no data here, Kindly setup...</Text>
         
         <View style = {{paddingTop: 20, width: '100%'}}>
-            {/* Login Button */}
+            {/* Add Button */}
             <TouchableOpacity 
                 style={styles.button} 
-                // onPress={}
+                onPress={() => router.push('/add-new-medicine')}
             >
                 <Text style={styles.buttonText}>Add</Text>
             </TouchableOpacity>
