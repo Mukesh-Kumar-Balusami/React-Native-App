@@ -13,8 +13,9 @@ import {
     KeyboardAvoidingView, 
     Platform, 
     TouchableWithoutFeedback, 
-    Keyboard
-} from 'react-native';import React, { useState } from 'react'
+    Keyboard,
+    ActivityIndicator
+} from 'react-native';import React, { useState, useEffect } from 'react'
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import {Types, WhenToTake} from './../constant/Options';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -24,6 +25,11 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { FormatDate, FormatDateForText, FormatTime } from '../service/ConvertDateTime';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import {db} from './../config/FirebaseConfig'
+import {getLocalStorage} from '../service/Storage'
+import { doc, setDoc } from "firebase/firestore";
+import { useRouter } from 'expo-router';
+
 
 export default function AddMedicineForm() {
 
@@ -31,12 +37,62 @@ export default function AddMedicineForm() {
     const [showStartDate, setShowStartDate] = useState(false);
     const [showEndDate, setShowEndDate] = useState(false);
     const [showTime, setShowTime] = useState(false);
+
+    // const user = getLocalStorage('userDetail');
+    const [user, setUser] = useState(null); // Store user details properly
+
+    const [loading, setLoading] = useState(false);
+
+    const router = useRouter();
+
+    useEffect(() => {
+      async function fetchUser() {
+        const storedUser = await getLocalStorage("userDetail"); // Ensure async handling
+        setUser(storedUser); // Set user state
+      }fetchUser();
+    }, []);
+
     const onHandleInputChange = (field, value) => {
         setFormData(prev=>({
             ...prev,
             [field]:value
         }));
         console.log(formData);
+    }
+
+    const SaveMedicine = async() => {
+      const docId = Date.now().toString();
+      
+      if (!(formData?.name && formData?.type && formData?.dose && formData?.startDate && formData?.endDate && formData?.reminder)) {
+        Alert.alert("Enter all fields");
+        return;
+      }
+
+      if (!user || !user.email) {
+        Alert.alert("User not found. Please login again.");
+        return;
+      }
+      
+      setLoading(true);
+
+      try {
+        await setDoc(doc(db, "medicines", docId), {
+          ...formData,
+          userEmail: user.email, // Ensure userEmail is defined
+          docId: docId,
+        });
+        console.log("Data Saved");
+        setLoading(false);
+        Alert.alert('Great!','New Medicine added successfully', [
+          {
+            test:'Ok',
+            onPress:() => router.push('(tabs)')
+          }
+        ]);
+      } catch (error) {
+        setLoading(false);
+        console.log(error);
+      }
     }
 
   return (
@@ -55,7 +111,7 @@ export default function AddMedicineForm() {
               // onChangeText={setEmail}
               // keyboardType="email-address"
 
-              onChangeText={(value) => onHandleInputChange("Name", value)}
+              onChangeText={(value) => onHandleInputChange("name", value)}
             />
           </View>
 
@@ -108,7 +164,7 @@ export default function AddMedicineForm() {
               // onChangeText={setEmail}
               // keyboardType="email-address"
 
-              onChangeText={(value) => onHandleInputChange("Dose", value)}
+              onChangeText={(value) => onHandleInputChange("dose", value)}
             />
           </View>
 
@@ -229,9 +285,17 @@ export default function AddMedicineForm() {
           <View style = {{paddingTop: 35, paddingBottom: 35}}>
             <TouchableOpacity 
                 style={styles.button} 
-                onPress={() => router.push('/add-new-medicine')}
-            >
+                onPress={SaveMedicine}
+                >
+              {loading ? (
+                <>
+                  <ActivityIndicator size={'large'} color={'white'} />
+                  <Text style={styles.buttonText}>Adding...</Text>
+                </>
+              ) : (
                 <Text style={styles.buttonText}>Add Medicine</Text>
+              )}
+
             </TouchableOpacity>
           </View>
 
